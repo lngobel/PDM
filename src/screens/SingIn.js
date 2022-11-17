@@ -32,6 +32,10 @@ const SingIn = ({navigation}) => {
     if (email !== '' && password !== '') {
       try {
         await auth().signInWithEmailAndPassword(email, password);
+        if (!auth().currentUser.emailVerified) {
+          Alert.alert('Erro!', 'Confirme seu cadastro no email ' + email);
+          return;
+        }
         await storeUserSession({
           email,
           password,
@@ -79,14 +83,19 @@ const SingIn = ({navigation}) => {
             keyboardType="email-address"
             returnKeyType="next"
             onChangeText={t => setEmail(t)}
+            onEndEditing={() => this.passTextInput.focus()}
           />
           <TextInput
+            ref={ref => {
+              this.passTextInput = ref;
+            }}
             style={styles.input}
             secureTextEntry={showPass}
             placeholder="Senha"
             keyboardType="default"
             returnKeyType="go"
             onChangeText={t => setPassword(t)}
+            onEndEditing={() => entrar()}
           />
           <Text
             style={styles.textEsqueceuSenha}
