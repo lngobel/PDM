@@ -4,12 +4,14 @@ import {Body, TextInput} from './styles';
 import MyButton from '../../componentes/MyButton';
 import auth from '@react-native-firebase/auth';
 import {CommonActions} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 const SignUp = ({navigation}) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
+
   const cadastrar = () => {
     if (nome !== '' && email !== '' && pass !== '' && confirmPass !== '') {
       if (pass === confirmPass) {
@@ -17,26 +19,41 @@ const SignUp = ({navigation}) => {
           .createUserWithEmailAndPassword(email, pass)
           .then(() => {
             let userF = auth().currentUser;
-            userF
-              .sendEmailVerification()
+            let user = {};
+            user.nome = nome;
+            user.email = email;
+            firestore()
+              .collection('users')
+              .doc(userF.uid)
+              .set(user)
               .then(() => {
-                Alert.alert(
-                  'Informação',
-                  'Foi enviado um email para ' + email + ' para verificação.',
-                );
-                navigation.dispatch(
-                  CommonActions.reset({
-                    index: 1,
-                    routes: [{name: 'AuthStack'}],
-                  }),
-                );
+                console.log('SignUp, cadastrar: Usuário adicionado!');
+                userF
+                  .sendEmailVerification()
+                  .then(() => {
+                    Alert.alert(
+                      'Informação',
+                      'Foi enviado um email para ' +
+                        email +
+                        ' para verificação.',
+                    );
+                    navigation.dispatch(
+                      CommonActions.reset({
+                        index: 1,
+                        routes: [{name: 'AuthStack'}],
+                      }),
+                    );
+                  })
+                  .catch(error => {
+                    console.log('SignUp, cadastrar: ' + error);
+                  });
               })
-              .catch((error) => {
-                console.error('SignUp, cadastrar: ' + error);
+              .catch(error => {
+                console.log('SignUp, cadastrar: ' + error);
               });
           })
-          .catch((error) => {
-            console.error('SignUp, cadastrar: ' + error);
+          .catch(error => {
+            console.log('SignUp, cadastrar: ' + error);
             switch (error.code) {
               case 'auth/email-already-in-use':
                 Alert.alert('Erro', 'Este email já está em uso.');
