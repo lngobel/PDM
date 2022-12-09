@@ -1,30 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import MyButton from '../componentes/MyButton';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import auth from '@react-native-firebase/auth';
-import RNRestart from 'react-native-restart';
+import {AuthUserContext} from '../context/AuthUserProvider';
 
 const OutraHome = () => {
-  const logOut = () => {
-    EncryptedStorage.removeItem('user_session')
-      .then(() => {
-        auth()
-          .signOut()
-          .then(() => {})
-          .catch(error => {
-            console.log('OutraHome, logOut: ' + error);
-          });
-        RNRestart.Restart();
-      })
-      .catch(error => {
-        console.log('OutraHome, logOut: ' + error);
-      });
-  };
+  const {logOut} = useContext(AuthUserContext);
 
   return (
     <View style={styles.container}>
-      <MyButton texto="Sair" onClick={logOut} />
+      <MyButton texto="Sair" onClick={() => logOut()} />
     </View>
   );
 };
