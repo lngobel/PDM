@@ -44,6 +44,7 @@ export const UserProvider = ({children}) => {
       .set(
         {
           nome: val.nome,
+          email: val.email,
         },
         {merge: true},
       )

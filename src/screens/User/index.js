@@ -64,27 +64,50 @@ const User = ({route, navigation}) => {
       },
     ]);
   };
-
-  return (
-    <Container>
-      <TextInput
-        placeholder="Nome Completo"
-        keyboardType="default"
-        returnKeyType="go"
-        onChangeText={t => setNome(t)}
-        value={nome}
-      />
-      <TextInput
-        placeholder="Email"
-        keyboardType="email-address"
-        editable={false}
-        value={email}
-      />
-      <MyButton texto="Salvar" onClick={salvar} />
-      <DeleteButton texto="Excluir" onClick={excluir} />
-      {loading && <Loading />}
-    </Container>
-  );
+  if (uid === '') {
+    return (
+      <Container>
+        <TextInput
+          placeholder="Nome Completo"
+          keyboardType="default"
+          returnKeyType="go"
+          onChangeText={t => setNome(t)}
+          value={nome}
+        />
+        <TextInput
+          placeholder="Email"
+          keyboardType="email-address"
+          returnKeyType="go"
+          onChangeText={t => setEmail(t)}
+          value={email}
+        />
+        <MyButton texto="Salvar" onClick={salvar} />
+        <DeleteButton texto="Excluir" onClick={excluir} />
+        {loading && <Loading />}
+      </Container>
+    );
+  } else {
+    return (
+      <Container>
+        <TextInput
+          placeholder="Nome Completo"
+          keyboardType="default"
+          returnKeyType="go"
+          onChangeText={t => setNome(t)}
+          value={nome}
+        />
+        <TextInput
+          placeholder="Email"
+          keyboardType="email-address"
+          editable={false}
+          value={email}
+        />
+        <MyButton texto="Salvar" onClick={salvar} />
+        <DeleteButton texto="Excluir" onClick={excluir} />
+        {loading && <Loading />}
+      </Container>
+    );
+  }
 };
 
 export default User;
