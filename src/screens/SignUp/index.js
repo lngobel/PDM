@@ -1,74 +1,31 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Alert} from 'react-native';
 import {Body, TextInput} from './styles';
 import MyButton from '../../componentes/MyButton';
-import auth from '@react-native-firebase/auth';
 import {CommonActions} from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
+import {AuthUserContext} from '../../context/AuthUserProvider';
+import Loading from '../../componentes/Loading';
 
 const SignUp = ({navigation}) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const [loading, setLoading] = useState(false);
   const [confirmPass, setConfirmPass] = useState('');
+  const {signUp} = useContext(AuthUserContext);
 
-  const cadastrar = () => {
+  const cadastrar = async () => {
     if (nome !== '' && email !== '' && pass !== '' && confirmPass !== '') {
       if (pass === confirmPass) {
-        auth()
-          .createUserWithEmailAndPassword(email, pass)
-          .then(() => {
-            let userF = auth().currentUser;
-            let user = {};
-            user.nome = nome;
-            user.email = email;
-            firestore()
-              .collection('users')
-              .doc(userF.uid)
-              .set(user)
-              .then(() => {
-                console.log('SignUp, cadastrar: Usuário adicionado!');
-                userF
-                  .sendEmailVerification()
-                  .then(() => {
-                    Alert.alert(
-                      'Informação',
-                      'Foi enviado um email para ' +
-                        email +
-                        ' para verificação.',
-                    );
-                    navigation.dispatch(
-                      CommonActions.reset({
-                        index: 1,
-                        routes: [{name: 'AuthStack'}],
-                      }),
-                    );
-                  })
-                  .catch(error => {
-                    console.log('SignUp, cadastrar: ' + error);
-                  });
-              })
-              .catch(error => {
-                console.log('SignUp, cadastrar: ' + error);
-              });
-          })
-          .catch(error => {
-            console.log('SignUp, cadastrar: ' + error);
-            switch (error.code) {
-              case 'auth/email-already-in-use':
-                Alert.alert('Erro', 'Este email já está em uso.');
-                break;
-              case 'auth/operation-not-allowed':
-                Alert.alert('Erro', 'Problemas ao cadastrar o usuário.');
-                break;
-              case 'auth/invalid-email':
-                Alert.alert('Erro', 'Email inválido.');
-                break;
-              case 'auth/weak-password':
-                Alert.alert('Erro', 'Por facor, digite uma senha mais forte.');
-                break;
-            }
-          });
+        setLoading(true);
+        await signUp(email, pass);
+        setLoading(false);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'AuthStack'}],
+          }),
+        );
       } else {
         Alert.alert(
           'Erro',
@@ -122,6 +79,7 @@ const SignUp = ({navigation}) => {
         onEndEditing={() => cadastrar()}
       />
       <MyButton texto="Cadastrar" onClick={cadastrar} />
+      {loading && <Loading />}
     </Body>
   );
 };

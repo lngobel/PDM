@@ -1,40 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, TextInput, Alert} from 'react-native';
 import MyButton from '../componentes/MyButton';
-import auth from '@react-native-firebase/auth';
+import {AuthUserContext} from '../context/AuthUserProvider';
 
 // import { Container } from './styles';
 
 const RecuperarSenha = ({navigation}) => {
   const [email, setEmail] = useState('');
+  const {recoverPass} = useContext(AuthUserContext);
 
-  const recover = () => {
+  const recover = async () => {
     if (email !== '') {
-      console.log(email);
-      auth()
-        .sendPasswordResetEmail(email)
-        .then(r => {
-          Alert.alert(
-            'Atenção',
-            'Foi enviado um email de recuperação de senha para o seguinte endereço: ' +
-              email,
-            [{text: 'OK', onPress: () => navigation.goBack()}],
-          );
-        })
-        .catch(error => {
-          console.error('RecuperarSenha, recover: ' + error);
-          switch (error.code) {
-            case 'auth/user-not-found':
-              Alert.alert('Erro', 'Usuário não cadastrado.');
-              break;
-            case 'auth/invalid-email':
-              Alert.alert('Erro', 'Email inválido.');
-              break;
-            case 'auth/user-disabled':
-              Alert.alert('Erro', 'Usuário desabilitado.');
-              break;
-          }
-        });
+      if (await recoverPass(email)) {
+        Alert.alert(
+          'Atenção',
+          'Enviamos um email de recuperação para o seguinte endereço' + email,
+          [{text: 'Ok', onPress: () => navigation.goBack()}],
+        );
+      }
     } else {
       Alert.alert('Atenção', 'Você deve preencher um email.');
     }

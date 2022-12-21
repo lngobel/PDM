@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -10,58 +10,30 @@ import {
   Alert,
 } from 'react-native';
 import MyButton from '../componentes/MyButton';
-import auth from '@react-native-firebase/auth';
+import Loading from '../componentes/Loading';
 import {CommonActions} from '@react-navigation/native';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {AuthUserContext} from '../context/AuthUserProvider';
 
 const SingIn = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(true);
-
-  async function storeUserSession(localUser) {
-    try {
-      await EncryptedStorage.setItem('user_session', JSON.stringify(localUser));
-    } catch (error) {
-      console.error('SingIn, storeUserSession: ' + error);
-    }
-  }
+  const {signIn} = useContext(AuthUserContext);
 
   const entrar = async () => {
     if (email !== '' && password !== '') {
-      try {
-        await auth().signInWithEmailAndPassword(email, password);
-        if (!auth().currentUser.emailVerified) {
-          Alert.alert('Erro!', 'Confirme seu cadastro no email ' + email);
-          return;
-        }
-        await storeUserSession({
-          email,
-          password,
-        });
+      setLoading(true);
+      if (await signIn(email, password)) {
+        setLoading(false);
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [{name: 'AppStack'}],
           }),
         );
-      } catch (error) {
-        console.error('SignIn, entrar: ' + error);
-        switch (error.code) {
-          case 'auth/user-not-found':
-            Alert.alert('Erro', 'Usuário não cadastrado.');
-            break;
-          case 'auth/wrong-password':
-            Alert.alert('Erro', 'Erro na senha.');
-            break;
-          case 'auth/invalid-email':
-            Alert.alert('Erro', 'Email inválido.');
-            break;
-          case 'auth/user-disabled':
-            Alert.alert('Erro', 'Usuário desabilitado.');
-            break;
-        }
+      } else {
+        setLoading(false);
       }
     } else {
       Alert.alert('Atenção', 'Você deve preencher todos os campos.');
@@ -121,6 +93,7 @@ const SingIn = ({navigation}) => {
           {/* {loading && <Loading />} */}
         </View>
       </ScrollView>
+      {loading && <Loading />}
     </SafeAreaView>
   );
 };
