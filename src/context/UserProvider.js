@@ -23,6 +23,8 @@ export const UserProvider = ({children}) => {
               id: doc.id,
               nome: doc.data().nome,
               email: doc.data().email,
+              latitude: doc.data().latitude,
+              longitude: doc.data().longitude,
             };
             d.push(val);
           });
@@ -45,6 +47,8 @@ export const UserProvider = ({children}) => {
         {
           nome: val.nome,
           email: val.email,
+          latitude: val.latitude,
+          longitude: val.longitude,
         },
         {merge: true},
       )

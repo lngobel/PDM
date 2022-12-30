@@ -9,6 +9,8 @@ import {UserContext} from '../../context/UserProvider';
 const User = ({route, navigation}) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
   const [uid, setId] = useState('');
   const [loading, setLoading] = useState(false);
   const {deleteUser} = useContext(UserContext);
@@ -18,10 +20,14 @@ const User = ({route, navigation}) => {
     // console.log(route.params.user);
     setNome('');
     setEmail('');
+    setLatitude('');
+    setLongitude('');
     setId('');
     if (route.params.user) {
       setNome(route.params.user.nome);
       setEmail(route.params.user.email);
+      setLatitude(route.params.user.latitude);
+      setLongitude(route.params.user.longitude);
       setId(route.params.user.id);
     }
   }, [route]);
@@ -31,6 +37,8 @@ const User = ({route, navigation}) => {
       let usuario = {};
       usuario.nome = nome;
       usuario.email = email;
+      usuario.latitude = latitude;
+      usuario.longitude = longitude;
       usuario.uid = uid;
       setLoading(true);
       await saveUser(usuario);
@@ -81,6 +89,20 @@ const User = ({route, navigation}) => {
           onChangeText={t => setEmail(t)}
           value={email}
         />
+        <TextInput
+          placeholder="Latitude em decimal"
+          keyboardType="numeric"
+          returnKeyType="go"
+          onChangeText={t => setLatitude(t)}
+          value={latitude}
+        />
+        <TextInput
+          placeholder="Longitude em decimal"
+          keyboardType="numeric"
+          returnKeyType="go"
+          onChangeText={t => setLongitude(t)}
+          value={longitude}
+        />
         <MyButton texto="Salvar" onClick={salvar} />
         <DeleteButton texto="Excluir" onClick={excluir} />
         {loading && <Loading />}
@@ -101,6 +123,20 @@ const User = ({route, navigation}) => {
           keyboardType="email-address"
           editable={false}
           value={email}
+        />
+        <TextInput
+          placeholder="Latitude em decimal"
+          keyboardType="numeric"
+          returnKeyType="go"
+          onChangeText={t => setLatitude(t)}
+          value={latitude}
+        />
+        <TextInput
+          placeholder="Longitude em decimal"
+          keyboardType="numeric"
+          returnKeyType="go"
+          onChangeText={t => setLongitude(t)}
+          value={longitude}
         />
         <MyButton texto="Salvar" onClick={salvar} />
         <DeleteButton texto="Excluir" onClick={excluir} />

@@ -7,6 +7,7 @@ import SingIn from '../../src/screens/SingIn';
 import SignUp from '../../src/screens/SignUp';
 import RecuperarSenha from '../../src/screens/RecuperarSenha';
 import OutraHome from '../../src/screens/OutraHome';
+import Mapa from '../../src/screens/Mapa';
 import Preload from '../../src/screens/Preload';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../src/assets/colors';
@@ -53,7 +54,17 @@ export default function App() {
         options={{
           tabBarLabel: 'Usuário',
           tabBarIcon: () => (
-            <Icon name="people" color={COLORS.primary} size={20} />
+            <Icon name="person" color={COLORS.primary} size={20} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Mapa"
+        component={Mapa}
+        options={{
+          tabBarLabel: 'Mapa',
+          tabBarIcon: () => (
+            <Icon name="map" color={COLORS.primary} size={20} />
           ),
         }}
       />
@@ -61,9 +72,9 @@ export default function App() {
         name="OutraHome"
         component={OutraHome}
         options={{
-          tabBarLabel: 'OutraHome',
+          tabBarLabel: 'LogOut',
           tabBarIcon: () => (
-            <Icon name="people" color={COLORS.primary} size={20} />
+            <Icon name="exit" color={COLORS.primary} size={20} />
           ),
         }}
       />
