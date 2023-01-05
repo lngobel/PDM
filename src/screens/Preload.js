@@ -3,9 +3,11 @@ import React, {useEffect, useContext} from 'react';
 import {View, Text, Alert} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import {AuthUserContext} from '../context/AuthUserProvider';
+import {ApiContext} from '../context/ApiProvider';
 
 const Preload = ({navigation}) => {
   const {signIn, retrieveUserSession} = useContext(AuthUserContext);
+  const {getApi} = useContext(ApiContext);
 
   const entrar = async (email, password) => {
     if (email !== '' && password !== '') {
@@ -41,6 +43,7 @@ const Preload = ({navigation}) => {
 
   useEffect(() => {
     loginAutomatico();
+    getApi();
   }, []);
 
   return (

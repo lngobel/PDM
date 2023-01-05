@@ -12,6 +12,8 @@ import Preload from '../../src/screens/Preload';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../src/assets/colors';
 import User from '../../src/screens/User';
+import Entregadores from '../screens/Entregadores';
+import Entregador from '../screens/Entregador';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,7 +44,7 @@ export default function App() {
         name="Users"
         component={Users}
         options={{
-          tabBarLabel: 'Usuarios',
+          tabBarLabel: 'Users',
           tabBarIcon: () => (
             <Icon name="people" color={COLORS.primary} size={20} />
           ),
@@ -52,9 +54,29 @@ export default function App() {
         name="User"
         component={User}
         options={{
-          tabBarLabel: 'Usuário',
+          tabBarLabel: 'User',
           tabBarIcon: () => (
             <Icon name="person" color={COLORS.primary} size={20} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Entregadores"
+        component={Entregadores}
+        options={{
+          tabBarLabel: 'Deliveries',
+          tabBarIcon: () => (
+            <Icon name="car" color={COLORS.primary} size={20} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Entregador"
+        component={Entregador}
+        options={{
+          tabBarLabel: 'Delivery',
+          tabBarIcon: () => (
+            <Icon name="car" color={COLORS.primary} size={20} />
           ),
         }}
       />
@@ -62,7 +84,7 @@ export default function App() {
         name="Mapa"
         component={Mapa}
         options={{
-          tabBarLabel: 'Mapa',
+          tabBarLabel: 'Map',
           tabBarIcon: () => (
             <Icon name="map" color={COLORS.primary} size={20} />
           ),
